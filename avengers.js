@@ -6,7 +6,7 @@ const FormData = require('form-data');
 
 const API_URL = 'https://livepeer.studio/api';
 const AI_API_URL = 'https://dream-gateway.livepeer.cloud/text-to-image';
-const API_KEY = '532d5b3e-f67b-48d7-bf2e-1f3a5c819ff3';
+const API_KEY = 'api key here';
 
 async function generateAIImage(prompt) {
   try {
