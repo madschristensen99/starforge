@@ -4,68 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Maker - Actor Selection</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .actor-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .actor {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .actor img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            margin-bottom: 10px;
-            background-color: #ddd;
-        }
-        .actor.selected {
-            background-color: #e0f0ff;
-        }
-        .prompt-container {
-            margin-bottom: 20px;
-        }
-        #prompt {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-        }
-        button {
-            display: block;
-            width: 200px;
-            margin: 0 auto;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div class="container">
@@ -80,50 +20,101 @@
         <button id="generateMovie">Generate Movie</button>
     </div>
 
-    <script>
-        const actors = [
-            { id: 1, name: "Tom Hanks", image: "./actorpics/hanks.jpg" },
-            { id: 2, name: "Leonardo DiCaprio", image: "./actorpics/leo.jpg" },
-            { id: 3, name: "Brad Pitt", image: "./actorpics/pitt.jpg" },
-            { id: 4, name: "Samuel L. Jackson", image: "./actorpics/jackson.jpg" },
-            { id: 5, name: "Meryl Streep", image: "./actorpics/streep.jpg" },
-            { id: 6, name: "Scarlett Johansson", image: "./actorpics/scarjo.jpg" },
-            { id: 7, name: "Gal Gadot", image: "./actorpics/gadot.jpg" },
-            { id: 8, name: "Tina Fey", image: "./actorpics/fey.jpg" }
-        ];
-        const actorGrid = document.getElementById('actorGrid');
-        const selectedActors = new Set();
+    <script type = "module">
 
-        actors.forEach(actor => {
-            const actorElement = document.createElement('div');
-            actorElement.className = 'actor';
-            actorElement.innerHTML = `
-                <img src="${actor.image}" alt="${actor.name}">
-                <p>${actor.name}</p>
-            `;
-            actorElement.addEventListener('click', () => toggleActorSelection(actor.id, actorElement));
-            actorGrid.appendChild(actorElement);
-        });
+import { ethers } from '../ethers.min.js';
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from './constants.js';
 
-        function toggleActorSelection(actorId, element) {
-            if (selectedActors.has(actorId)) {
-                selectedActors.delete(actorId);
-                element.classList.remove('selected');
-            } else {
-                selectedActors.add(actorId);
-                element.classList.add('selected');
-            }
-        }
 
-        document.getElementById('generateMovie').addEventListener('click', () => {
-            const prompt = document.getElementById('prompt').value;
-            const selectedActorNames = Array.from(selectedActors)
-                .map(id => actors.find(actor => actor.id === id)?.name)
-                .join(', ');
-            console.log('Selected Actors:', selectedActorNames);
-            console.log('Movie Prompt:', prompt);
-            alert(`Selected Actors: ${selectedActorNames}\nMovie Prompt: ${prompt}\n\nMovie generation functionality will be implemented with web3 stack and Story Protocol.`);
-        });
+const actors = [
+    { id: 1, name: "Tom Hanks", image: "./actorpics/hanks.jpg" },
+    { id: 2, name: "Leonardo DiCaprio", image: "./actorpics/leo.jpg" },
+    { id: 3, name: "Brad Pitt", image: "./actorpics/pitt.jpg" },
+    { id: 4, name: "Samuel L. Jackson", image: "./actorpics/jackson.jpg" },
+    { id: 5, name: "Meryl Streep", image: "./actorpics/streep.jpg" },
+    { id: 6, name: "Scarlett Johansson", image: "./actorpics/scarjo.jpg" },
+    { id: 7, name: "Gal Gadot", image: "./actorpics/gadot.jpg" },
+    { id: 8, name: "Tina Fey", image: "./actorpics/fey.jpg" }
+];
+
+const selectedActors = new Set();
+let provider, signer, contract;
+//
+async function initializeEthers() {
+    try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+// MetaMask requires requesting permission to connect users accounts
+await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        console.log(contract);
+    } catch (error) {
+        console.error('Failed to initialize Ethers:', error);
+        alert('Failed to connect to Story Protocol. Please check your wallet connection and try again.');
+    }
+}
+
+function initializeActorGrid() {
+    const actorGrid = document.getElementById('actorGrid');
+    actors.forEach(actor => {
+        const actorElement = document.createElement('div');
+        actorElement.className = 'actor';
+        actorElement.innerHTML = `
+            <img src="${actor.image}" alt="${actor.name}">
+            <p>${actor.name}</p>
+        `;
+        actorElement.addEventListener('click', () => toggleActorSelection(actor.id, actorElement));
+        actorGrid.appendChild(actorElement);
+    });
+}
+
+function toggleActorSelection(actorId, element) {
+    if (selectedActors.has(actorId)) {
+        selectedActors.delete(actorId);
+        element.classList.remove('selected');
+    } else {
+        selectedActors.add(actorId);
+        element.classList.add('selected');
+    }
+}
+
+async function generateMovie() {
+    if (!signer) {
+        alert('Please connect your wallet to use this feature.');
+        return;
+    }
+
+    const prompt = document.getElementById('prompt').value;
+    const selectedActorNames = Array.from(selectedActors)
+        .map(id => actors.find(actor => actor.id === id)?.name)
+        .join(', ');
+
+    if (selectedActorNames.length === 0 || prompt.trim() === '') {
+        alert('Please select at least one actor and enter a movie prompt.');
+        return;
+    }
+
+    try {
+        console.log(selectedActorNames);
+        console.log(prompt)
+        console.log(contract);
+        const tx = await contract.createMovie(selectedActorNames, prompt);
+        await tx.wait();
+        console.log('Movie created on Story Protocol');
+        alert(`Movie successfully created on Story Protocol!\nSelected Actors: ${selectedActorNames}\nMovie Prompt: ${prompt}`);
+    } catch (error) {
+        console.error('Failed to create movie:', error);
+        alert('Failed to create movie. Please check your wallet connection and try again.');
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    initializeEthers();
+    initializeActorGrid();
+    document.getElementById('generateMovie').addEventListener('click', generateMovie);
+});
     </script>
 </body>
 </html>
