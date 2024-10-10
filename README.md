@@ -38,7 +38,10 @@ StarForge allows users to select actors, input movie prompts, and automatically 
 - Ethers.js (Blockchain Interaction)
 - Node.js (Backend Service)
 - HTML/CSS/JavaScript (Frontend)
-- AI APIs (Image Generation, Text-to-Speech, etc.)
+- AI APIs
+   - Livepeer AI Pipelines (Image Generation, Image to Video)
+   - Galadriel (Script and prompt generation)
+   - Elevenlabs (Voice Cloning, Text to Sound Effect, Text to Speech)
 - Livepeer (Video Streaming)
 - FFmpeg (Video Processing)
 
