@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarForge Movie Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1c2841;
+            --secondary-color: #c0a080;
+            --text-color: #333;
+            --background-color: #f4f1e8;
+            --accent-color: #8b0000;
+        }
+        body {
+            font-family: 'Playfair Display', Georgia, serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .movie-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .movie-card h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+        .movie-card p {
+            margin: 10px 0;
+        }
+        .movie-card .actors {
+            font-style: italic;
+            color: var(--secondary-color);
+        }
+        .movie-card .prompt {
+            font-weight: bold;
+        }
+        .movie-card .creator {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .movie-card iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>StarForge Movie Gallery</h1>
+        <div id="movieGrid" class="movie-grid">
+            <!-- Movies will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { ethers } from '../ethers.min.js';
+        import { CONTRACT_ADDRESS, CONTRACT_ABI } from './constants.js';
+
+        let provider, contract;
+
+        async function initializeEthers() {
+            try {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+            } catch (error) {
+                console.error('Failed to initialize Ethers:', error);
+                alert('Failed to connect to Story Protocol. Please check your wallet connection and try again.');
+            }
+        }
+
+        async function loadMovies() {
+            try {
+                const movieData = await contract.getAllMovies();
+                console.log(movieData);
+                const movieGrid = document.getElementById('movieGrid');
+                
+                // Create array of movies with correct IDs
+                const movies = movieData.map((movie, index) => ({
+                    ...movie,
+                    id: index + 1  // IDs start from 1
+                }));
+
+                // Reverse the array to display newest first
+                movies.reverse();
+
+                movies.forEach((movie) => {
+                    const movieElement = document.createElement('div');
+                    movieElement.className = 'movie-card';//${movie.creator}
+                    movieElement.innerHTML = `
+                        <h2>Movie #${movie.id}</h2>
+                        <p class="actors">Starring: ${movie.actors}</p>
+                        <p class="prompt">Prompt: ${movie.prompt}</p>
+                        <p class="creator">Created by: 0x49a22328fecF3e43C4C0fEDfb7E5272248904E3E</p>
+                        ${movie.link 
+                            ? `<iframe src="${movie.link}" allowfullscreen></iframe>`
+                            : '<p>No video available</p>'
+                        }
+                    `;
+                    movieGrid.appendChild(movieElement);
+                });
+            } catch (error) {
+                console.error('Failed to load movies:', error);
+                alert('Failed to load movies. Please check your wallet connection and try again.');
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeEthers();
+            await loadMovies();
+        });
+    </script>
+</body>
+</html>
