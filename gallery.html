@@ -91,12 +91,17 @@
 
         async function initializeEthers() {
             try {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
+                if (window.ethereum) {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                } else {
+                    console.log("MetaMask not detected. Using public RPC endpoint.");
+                    provider = new ethers.providers.JsonRpcProvider("https://testnet.storyrpc.io");
+                }
                 contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
             } catch (error) {
                 console.error('Failed to initialize Ethers:', error);
-                alert('Failed to connect to Story Protocol. Please check your wallet connection and try again.');
+                alert('Failed to connect to Story Protocol. Please check your connection and try again.');
             }
         }
 
@@ -117,12 +122,12 @@
 
                 movies.forEach((movie) => {
                     const movieElement = document.createElement('div');
-                    movieElement.className = 'movie-card';//${movie.creator}
+                    movieElement.className = 'movie-card';
                     movieElement.innerHTML = `
                         <h2>Movie #${movie.id}</h2>
                         <p class="actors">Starring: ${movie.actors}</p>
                         <p class="prompt">Prompt: ${movie.prompt}</p>
-                        <p class="creator">Created by: 0x49a22328fecF3e43C4C0fEDfb7E5272248904E3E</p>
+                        <p class="creator">Created by: ${movie.creator || '0x49a22328fecF3e43C4C0fEDfb7E5272248904E3E'}</p>
                         ${movie.link 
                             ? `<iframe src="${movie.link}" allowfullscreen></iframe>`
                             : '<p>No video available</p>'
@@ -132,7 +137,7 @@
                 });
             } catch (error) {
                 console.error('Failed to load movies:', error);
-                alert('Failed to load movies. Please check your wallet connection and try again.');
+                alert('Failed to load movies. Please check your connection and try again.');
             }
         }
 
