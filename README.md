@@ -19,8 +19,8 @@ StarForge allows users to select actors, input movie prompts, and automatically 
    - Combines generated media into a final video
    - Uploads the video to Livepeer for streaming
 
-3. **Web Interface (`index.html`, `style.css`, `constants.js`)**
-   - Provides a user-friendly interface for actor selection and movie prompt input
+3. **Web Interface (`index.html`, `gallery.html`, `style.css`, `constants.js`)**
+   - Provides a user-friendly interface for actor selection, movie prompt input, and viewership
    - Interacts with the smart contract to initiate movie creation
 
 ## ✨ Features
