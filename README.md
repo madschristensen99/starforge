@@ -58,7 +58,7 @@ To run the project locally:
 2. Navigate to the project directory
 3. Install dependencies:
    ```bash
-   npm install
+   npm install axios fs child_process tus-js-client form-data ethers dotenv elevenlabs
 ## 📖 Usage
 
 1. Visit the demo link or your local setup
