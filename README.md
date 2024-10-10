@@ -15,7 +15,7 @@ StarForge allows users to select actors, input movie prompts, and automatically 
 2. **Backend Service (`moviegen.js`)**
    - Listens to the StarForge contract for new movie creation events
    - Generates movie scripts using AI
-   - Creates visuals, dialogue, and sound effects using various AI services
+   - Creates visuals, dialogue, and sound effects using various AI services - Galadriel, Elevenlabs, and Livepeer AI pipelines
    - Combines generated media into a final video
    - Uploads the video to Livepeer for streaming
 
