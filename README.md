@@ -59,3 +59,24 @@ To run the project locally:
 3. Install dependencies:
    ```bash
    npm install
+## 📖 Usage
+
+1. Visit the demo link or your local setup
+2. Select actors from the provided options
+3. Enter a movie prompt in the text field
+4. Click "Generate Movie" to create your AI-generated movie scene
+
+## 📄 License
+
+This project is open-source and free to use. Anyone can use, modify, and distribute this software.
+
+## 🙏 Acknowledgements
+
+- [Story Protocol](https://github.com/storyprotocol)
+- [Galadriel AI](https://github.com/galadriel-ai/contracts)
+- [Livepeer](https://docs.livepeer.org/developers/introduction)
+- [ElevenLabs](https://elevenlabs.io/docs/introduction)
+
+---
+
+Made with ❤️ by Remsee
