@@ -49,7 +49,7 @@ StarForge allows users to select actors, input movie prompts, and automatically 
 
 You can try out the StarForge demo at [https://webed.academy/starforge/index.html](https://webed.academy/starforge/index.html)
 
-[Placeholder for Demo Video]
+[https://youtu.be/OaPE96wkyCE?si=KvuP8OPtK1KDJbUI]
 
 For more information about the project, check out the [Remsee YouTube channel](https://www.youtube.com/@remsee1608).
 
